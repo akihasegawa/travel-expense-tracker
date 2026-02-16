@@ -1,0 +1,23 @@
+{
+  "name": "Travel Expense Tracker",
+  "short_name": "TravelExpense",
+  "description": "Private offline-first travel expense tracker",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#f4f8f4",
+  "theme_color": "#14532d",
+  "lang": "en",
+  "icons": [
+    {
+      "src": "./assets/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "./assets/maskable.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}

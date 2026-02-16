@@ -1,0 +1,69 @@
+{
+  "schemaVersion": "1.0.0",
+  "exportedAt": 1760000005000,
+  "config": {
+    "categories": [
+      "Flights",
+      "Lodging",
+      "Local transport",
+      "Food & drinks",
+      "Attractions",
+      "Shopping",
+      "SIM/Internet",
+      "Fees (ATM/baggage/etc.)",
+      "Misc",
+      "Souvenirs"
+    ],
+    "paymentMethods": ["Cash", "Wise", "Apple Pay", "Other"]
+  },
+  "trips": [
+    {
+      "id": "trip_abc",
+      "name": "HK March 2026",
+      "startDate": "2026-03-10",
+      "endDate": "2026-03-20",
+      "baseCurrency": "JPY",
+      "currencies": ["JPY", "HKD"],
+      "budgetEnabled": true,
+      "budgetAmountBase": 120000,
+      "dailyBudgetAmountBase": 12000,
+      "createdAt": 1760000000000
+    }
+  ],
+  "expenses": [
+    {
+      "id": "exp_123",
+      "tripId": "trip_abc",
+      "dateTime": "2026-03-11T13:05",
+      "amountOriginal": 120.5,
+      "currency": "HKD",
+      "fxRateToBase": 19,
+      "amountBase": 2290,
+      "category": "Food & drinks",
+      "payment": "Wise",
+      "note": "Dim sum",
+      "paidBy": "Me",
+      "location": "Central",
+      "tags": ["lunch"],
+      "createdAt": 1760000000123,
+      "updatedAt": 1760000000123
+    },
+    {
+      "id": "exp_124",
+      "tripId": "trip_abc",
+      "dateTime": "2026-03-12T09:20",
+      "amountOriginal": 80,
+      "currency": "HKD",
+      "fxRateToBase": 19.1,
+      "amountBase": 1528,
+      "category": "Local transport",
+      "payment": "Cash",
+      "note": "Airport express",
+      "paidBy": "Me",
+      "location": "Airport",
+      "tags": ["train"],
+      "createdAt": 1760001000123,
+      "updatedAt": 1760001000123
+    }
+  ]
+}

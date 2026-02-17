@@ -1,352 +1,355 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <meta name="theme-color" content="#007AFF" />
-    <title>Travel Expense Tracker</title>
-    <link rel="manifest" href="./manifest.json" />
-    <link rel="icon" href="./assets/icon.svg" type="image/svg+xml" />
-    <link rel="apple-touch-icon" href="./assets/icon.svg" />
-    <link rel="stylesheet" href="./styles.css" />
-  </head>
-  <body>
-    <div class="app-container">
-      <!-- Hidden header elements (kept for compatibility) -->
-      <div class="header hidden">
-        <h1>Travel Expense Tracker</h1>
-        <div id="schemaVersionLabel" class="schema-label"></div>
-        <div id="activeTripSummary" class="trip-summary">No active trip</div>
-        <label>
-          Active trip
-          <select id="activeTripSelect"></select>
-        </label>
-        <div id="statusMessage" class="status"></div>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#AEB8C3" />
+  <title>Travel Expense Tracker</title>
+  <link rel="manifest" href="./manifest.json" />
+  <link rel="icon" href="./assets/icon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="./assets/icon.svg" />
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+
+<body>
+  <div class="app-container">
+    <!-- Hidden header elements (kept for compatibility) -->
+    <div class="header hidden">
+      <h1>Travel Expense Tracker</h1>
+      <div id="schemaVersionLabel" class="schema-label"></div>
+      <div id="activeTripSummary" class="trip-summary">No active trip</div>
+      <label>
+        Active trip
+        <select id="activeTripSelect"></select>
+      </label>
+      <div id="statusMessage" class="status"></div>
+      <div id="swUpdateBanner" class="update-banner hidden">
+        <span>Update available.</span>
+        <button id="applyUpdateBtn" class="btn-small btn-primary">Apply update</button>
+      </div>
+    </div>
+
+    <!-- Old tabs (hidden, kept for compatibility) -->
+    <nav class="tabs hidden">
+      <button data-tab-button="trips">Trips</button>
+      <button data-tab-button="add-expense">Add Expense</button>
+      <button data-tab-button="expenses">Expenses</button>
+      <button data-tab-button="dashboard">Dashboard</button>
+      <button data-tab-button="data-tools">Data Tools</button>
+      <button data-tab-button="settings">Config</button>
+    </nav>
+
+    <main>
+      <!-- Dashboard Section -->
+      <section data-tab-panel="dashboard" class="hidden">
+        <div class="page-header">
+          <h1 class="page-title">Dashboard</h1>
+          <button class="header-action" data-tab-button="settings">⚙️</button>
+        </div>
+
         <div id="swUpdateBanner" class="update-banner hidden">
           <span>Update available.</span>
           <button id="applyUpdateBtn" class="btn-small btn-primary">Apply update</button>
         </div>
-      </div>
 
-      <!-- Old tabs (hidden, kept for compatibility) -->
-      <nav class="tabs hidden">
-        <button data-tab-button="trips">Trips</button>
-        <button data-tab-button="add-expense">Add Expense</button>
-        <button data-tab-button="expenses">Expenses</button>
-        <button data-tab-button="dashboard">Dashboard</button>
-        <button data-tab-button="data-tools">Data Tools</button>
-        <button data-tab-button="settings">Config</button>
-      </nav>
-
-      <main>
-        <!-- Dashboard Section -->
-        <section data-tab-panel="dashboard" class="hidden">
-          <div class="page-header">
-            <h1 class="page-title">Dashboard</h1>
-            <button class="header-action" data-tab-button="settings">⚙️</button>
+        <div class="summary-row">
+          <div class="summary-card">
+            <div class="summary-label">Total Spent</div>
+            <div class="summary-value" id="totalSpent">-</div>
           </div>
-
-          <div id="swUpdateBanner" class="update-banner hidden">
-            <span>Update available.</span>
-            <button id="applyUpdateBtn" class="btn-small btn-primary">Apply update</button>
+          <div class="summary-card" id="budgetPanel">
+            <div class="summary-label">Budget</div>
+            <div class="summary-value">-</div>
           </div>
-
-          <div class="summary-row">
-            <div class="summary-card">
-              <div class="summary-label">Total Spent</div>
-              <div class="summary-value" id="totalSpent">-</div>
-            </div>
-            <div class="summary-card" id="budgetPanel">
-              <div class="summary-label">Budget</div>
-              <div class="summary-value">-</div>
-            </div>
-          </div>
-
-          <div class="chart-container">
-            <h3 style="margin-bottom: 16px;">Category Breakdown</h3>
-            <div class="donut-chart-wrapper">
-              <canvas id="categoryChartCanvas"></canvas>
-            </div>
-            <div id="categoryChart" class="category-list"></div>
-          </div>
-
-          <div class="card">
-            <h3 style="margin-bottom: 12px;">Category Details</h3>
-            <div id="categoryTable" class="table-wrap"></div>
-          </div>
-
-          <div class="card">
-            <h3 style="margin-bottom: 12px;">Daily Totals</h3>
-            <div id="dailyChart" class="chart"></div>
-          </div>
-
-          <div class="card">
-            <h3 style="margin-bottom: 12px;">Payment Methods</h3>
-            <div id="paymentChart" class="chart"></div>
-            <div id="paymentTable" class="table-wrap"></div>
-          </div>
-        </section>
-
-        <!-- Transactions/Expenses Section -->
-        <section data-tab-panel="expenses" class="hidden">
-          <div class="page-header">
-            <h1 class="page-title">Transactions</h1>
-            <span class="summary-label"><span id="expenseCount">0</span> expenses</span>
-          </div>
-
-          <div class="month-selector">
-            <button class="month-nav-btn" id="monthPrev">‹</button>
-            <span class="month-label" id="monthLabel">All Time</span>
-            <button class="month-nav-btn" id="monthNext">›</button>
-          </div>
-
-          <div class="filters">
-            <div class="panel-grid">
-              <label>From
-                <input id="filterStartDate" type="date" />
-              </label>
-              <label>To
-                <input id="filterEndDate" type="date" />
-              </label>
-              <label>Category
-                <select id="filterCategory"></select>
-              </label>
-              <label>Payment
-                <select id="filterPayment"></select>
-              </label>
-              <label class="row-span-full">Search
-                <input id="filterSearch" type="text" placeholder="Note, location, or tags..." />
-              </label>
-              <div class="row-actions row-span-full">
-                <button type="button" id="quickToday" class="btn-secondary btn-small">Today</button>
-                <button type="button" id="quickTrip" class="btn-secondary btn-small">This Trip</button>
-              </div>
-            </div>
-          </div>
-
-          <div id="expenseList" class="table-wrap"></div>
-        </section>
-
-        <!-- Add Expense Section -->
-        <section data-tab-panel="add-expense" class="hidden">
-          <div class="page-header">
-            <h2 class="page-title" id="expenseFormTitle">Add Expense</h2>
-          </div>
-
-          <div class="card">
-            <form id="expenseForm" class="panel-grid">
-              <input id="expenseId" type="hidden" />
-              
-              <label>Amount
-                <input id="expAmountOriginal" type="number" min="0.01" step="0.01" required 
-                       style="font-size: 24px; font-weight: 600;" placeholder="0.00" />
-              </label>
-
-              <label>Currency
-                <select id="expCurrency"></select>
-              </label>
-
-              <label id="fxField" class="hidden">FX rate to base
-                <input id="expFx" type="number" min="0" step="0.0001" />
-              </label>
-
-              <div class="highlight row-span-full">
-                Base amount: <strong id="amountBasePreview">-</strong>
-              </div>
-
-              <label>Date/time
-                <input id="expDateTime" type="datetime-local" required />
-              </label>
-
-              <label>Category
-                <select id="expCategory"></select>
-              </label>
-
-              <label>Payment
-                <select id="expPayment"></select>
-              </label>
-
-              <label>Note
-                <input id="expNote" type="text" maxlength="120" placeholder="Optional" />
-              </label>
-
-              <label>Paid by
-                <select id="expPaidBy">
-                  <option value="Me">Me</option>
-                  <option value="Other">Other</option>
-                </select>
-              </label>
-
-              <label>Location
-                <input id="expLocation" type="text" maxlength="80" placeholder="Optional" />
-              </label>
-
-              <label>Tags (comma separated)
-                <input id="expTags" type="text" placeholder="Optional" />
-              </label>
-
-              <label class="inline-label row-span-full">
-                <input id="saveAndCloseToggle" type="checkbox" />
-                Save and switch to transaction list
-              </label>
-
-              <div class="row-actions row-span-full">
-                <button type="submit" class="btn-primary">Save Expense</button>
-                <button type="button" id="expenseFormReset" class="btn-secondary">Reset</button>
-              </div>
-            </form>
-          </div>
-        </section>
-
-        <!-- Trips Section -->
-        <section data-tab-panel="trips">
-          <div class="page-header">
-            <h1 class="page-title">Trips</h1>
-          </div>
-
-          <div class="card">
-            <div class="card-header">
-              <h3 class="card-title">Active Trip</h3>
-            </div>
-            <div id="activeTripSummary" class="summary-label" style="margin-bottom: 12px;">No active trip</div>
-            <label>
-              Select trip
-              <select id="activeTripSelect"></select>
-            </label>
-          </div>
-
-          <div class="card">
-            <h2 id="tripFormTitle" class="card-title" style="margin-bottom: 16px;">Create Trip</h2>
-            <form id="tripForm" class="panel-grid">
-              <label>Name
-                <input id="tripName" type="text" maxlength="50" required />
-              </label>
-              <label>Start date
-                <input id="tripStartDate" type="date" required />
-              </label>
-              <label>End date
-                <input id="tripEndDate" type="date" required />
-              </label>
-              <label>Base currency
-                <input id="tripBaseCurrency" type="text" value="JPY" maxlength="6" required />
-              </label>
-              <label class="row-span-full">Currencies (comma separated)
-                <input id="tripCurrencies" type="text" value="JPY, HKD" required />
-              </label>
-              <label class="inline-label row-span-full">
-                <input id="tripBudgetEnabled" type="checkbox" checked />
-                Budget enabled
-              </label>
-
-              <div id="budgetFields" class="panel-grid row-span-full">
-                <label>Budget amount (base)
-                  <input id="tripBudgetAmount" type="number" min="0" step="1" />
-                </label>
-                <label>Daily budget amount (base, optional)
-                  <input id="tripDailyBudgetAmount" type="number" min="0" step="1" />
-                </label>
-              </div>
-
-              <div class="row-actions row-span-full">
-                <button type="submit" class="btn-primary">Save Trip</button>
-                <button type="button" id="tripFormReset" class="btn-secondary">Clear</button>
-              </div>
-            </form>
-          </div>
-
-          <h3 style="margin: 24px 0 12px;">Your Trips</h3>
-          <div id="tripList" class="cards"></div>
-        </section>
-
-        <!-- No Trip Notice -->
-        <section id="noTripNotice" class="notice hidden">
-          Create a trip to start entering expenses.
-        </section>
-
-        <!-- Main Panels Container (for compatibility) -->
-        <div id="mainPanels" class="hidden">
-          <!-- Panels are now top-level sections -->
         </div>
 
-        <!-- Data Tools Section -->
-        <section data-tab-panel="data-tools" class="hidden">
-          <div class="page-header">
-            <h1 class="page-title">Data Tools</h1>
+        <div class="chart-container">
+          <h3 style="margin-bottom: 16px;">Category Breakdown</h3>
+          <div class="donut-chart-wrapper">
+            <canvas id="categoryChartCanvas"></canvas>
           </div>
+          <div id="categoryChart" class="category-list"></div>
+        </div>
 
-          <div class="card">
-            <h3 style="margin-bottom: 16px;">Export</h3>
-            <div class="row-actions">
-              <button id="exportCsvBtn" type="button" class="btn-secondary">Export CSV</button>
-              <button id="exportBackupBtn" type="button" class="btn-secondary">Export Backup</button>
+        <div class="card">
+          <h3 style="margin-bottom: 12px;">Category Details</h3>
+          <div id="categoryTable" class="table-wrap"></div>
+        </div>
+
+        <div class="card">
+          <h3 style="margin-bottom: 12px;">Daily Totals</h3>
+          <div id="dailyChart" class="chart"></div>
+        </div>
+
+        <div class="card">
+          <h3 style="margin-bottom: 12px;">Payment Methods</h3>
+          <div id="paymentChart" class="chart"></div>
+          <div id="paymentTable" class="table-wrap"></div>
+        </div>
+      </section>
+
+      <!-- Transactions/Expenses Section -->
+      <section data-tab-panel="expenses" class="hidden">
+        <div class="page-header">
+          <h1 class="page-title">Transactions</h1>
+          <span class="summary-label"><span id="expenseCount">0</span> expenses</span>
+        </div>
+
+        <div class="month-selector">
+          <button class="month-nav-btn" id="monthPrev">‹</button>
+          <span class="month-label" id="monthLabel">All Time</span>
+          <button class="month-nav-btn" id="monthNext">›</button>
+        </div>
+
+        <div class="filters">
+          <div class="panel-grid">
+            <label>From
+              <input id="filterStartDate" type="date" />
+            </label>
+            <label>To
+              <input id="filterEndDate" type="date" />
+            </label>
+            <label>Category
+              <select id="filterCategory"></select>
+            </label>
+            <label>Payment
+              <select id="filterPayment"></select>
+            </label>
+            <label class="row-span-full">Search
+              <input id="filterSearch" type="text" placeholder="Note, location, or tags..." />
+            </label>
+            <div class="row-actions row-span-full">
+              <button type="button" id="quickToday" class="btn-secondary btn-small">Today</button>
+              <button type="button" id="quickTrip" class="btn-secondary btn-small">This Trip</button>
             </div>
           </div>
+        </div>
 
-          <div class="card">
-            <h3 style="margin-bottom: 16px;">Restore JSON Backup</h3>
-            <label>Backup file
-              <input id="restoreFile" type="file" accept="application/json" />
+        <div id="expenseList" class="table-wrap"></div>
+      </section>
+
+      <!-- Add Expense Section -->
+      <section data-tab-panel="add-expense" class="hidden">
+        <div class="page-header">
+          <h2 class="page-title" id="expenseFormTitle">Add Expense</h2>
+        </div>
+
+        <div class="card">
+          <form id="expenseForm" class="panel-grid">
+            <input id="expenseId" type="hidden" />
+
+            <label>Amount
+              <input id="expAmountOriginal" type="number" min="0.01" step="0.01" required
+                style="font-size: 24px; font-weight: 600;" placeholder="0.00" />
             </label>
-            <p id="restoreSummary" style="margin: 12px 0; color: var(--text-secondary);"></p>
-            <button id="restoreApplyBtn" type="button" class="btn-danger">Restore (overwrite local data)</button>
-          </div>
 
-          <div class="card">
-            <h3 style="margin-bottom: 16px;">System Info</h3>
-            <div id="schemaVersionLabel" class="summary-label"></div>
-            <div id="statusMessage" class="status" style="margin-top: 8px;"></div>
-          </div>
-        </section>
+            <label>Currency
+              <select id="expCurrency"></select>
+            </label>
 
-        <!-- Settings Section -->
-        <section data-tab-panel="settings" class="hidden">
-          <div class="page-header">
-            <h1 class="page-title">Settings</h1>
-          </div>
+            <label id="fxField" class="hidden">FX rate to base
+              <input id="expFx" type="number" min="0" step="0.0001" />
+            </label>
 
-          <div class="card">
-            <h3 style="margin-bottom: 16px;">Config Lists</h3>
-            <form id="settingsForm" class="panel-grid">
-              <label class="row-span-full">Categories (one per line)
-                <textarea id="settingsCategories" rows="10"></textarea>
+            <div class="highlight row-span-full">
+              Base amount: <strong id="amountBasePreview">-</strong>
+            </div>
+
+            <label>Date/time
+              <input id="expDateTime" type="datetime-local" required />
+            </label>
+
+            <label>Category
+              <select id="expCategory"></select>
+            </label>
+
+            <label>Payment
+              <select id="expPayment"></select>
+            </label>
+
+            <label>Note
+              <input id="expNote" type="text" maxlength="120" placeholder="Optional" />
+            </label>
+
+            <label>Paid by
+              <select id="expPaidBy">
+                <option value="Me">Me</option>
+                <option value="Other">Other</option>
+              </select>
+            </label>
+
+            <label>Location
+              <input id="expLocation" type="text" maxlength="80" placeholder="Optional" />
+            </label>
+
+            <label>Tags (comma separated)
+              <input id="expTags" type="text" placeholder="Optional" />
+            </label>
+
+            <label class="inline-label row-span-full">
+              <input id="saveAndCloseToggle" type="checkbox" />
+              Save and switch to transaction list
+            </label>
+
+            <div class="row-actions row-span-full">
+              <button type="submit" class="btn-primary">Save Expense</button>
+              <button type="button" id="expenseFormReset" class="btn-secondary">Reset</button>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <!-- Trips Section -->
+      <section data-tab-panel="trips">
+        <div class="page-header">
+          <h1 class="page-title">Trips</h1>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Active Trip</h3>
+          </div>
+          <div id="activeTripSummary" class="summary-label" style="margin-bottom: 12px;">No active trip</div>
+          <label>
+            Select trip
+            <select id="activeTripSelect"></select>
+          </label>
+        </div>
+
+        <div class="card">
+          <h2 id="tripFormTitle" class="card-title" style="margin-bottom: 16px;">Create Trip</h2>
+          <form id="tripForm" class="panel-grid">
+            <label>Name
+              <input id="tripName" type="text" maxlength="50" required />
+            </label>
+            <label>Start date
+              <input id="tripStartDate" type="date" required />
+            </label>
+            <label>End date
+              <input id="tripEndDate" type="date" required />
+            </label>
+            <label>Base currency
+              <input id="tripBaseCurrency" type="text" value="JPY" maxlength="6" required />
+            </label>
+            <label class="row-span-full">Currencies (comma separated)
+              <input id="tripCurrencies" type="text" value="JPY, HKD" required />
+            </label>
+            <label class="inline-label row-span-full">
+              <input id="tripBudgetEnabled" type="checkbox" checked />
+              Budget enabled
+            </label>
+
+            <div id="budgetFields" class="panel-grid row-span-full">
+              <label>Budget amount (base)
+                <input id="tripBudgetAmount" type="number" min="0" step="1" />
               </label>
-              <label class="row-span-full">Payment methods (one per line)
-                <textarea id="settingsPayments" rows="10"></textarea>
+              <label>Daily budget amount (base, optional)
+                <input id="tripDailyBudgetAmount" type="number" min="0" step="1" />
               </label>
-              <div class="row-actions row-span-full">
-                <button type="submit" class="btn-primary">Save Lists</button>
-                <button id="settingsResetBtn" type="button" class="btn-secondary">Reset Defaults</button>
-              </div>
-            </form>
+            </div>
+
+            <div class="row-actions row-span-full">
+              <button type="submit" class="btn-primary">Save Trip</button>
+              <button type="button" id="tripFormReset" class="btn-secondary">Clear</button>
+            </div>
+          </form>
+        </div>
+
+        <h3 style="margin: 24px 0 12px;">Your Trips</h3>
+        <div id="tripList" class="cards"></div>
+      </section>
+
+      <!-- No Trip Notice -->
+      <section id="noTripNotice" class="notice hidden">
+        Create a trip to start entering expenses.
+      </section>
+
+      <!-- Main Panels Container (for compatibility) -->
+      <div id="mainPanels" class="hidden">
+        <!-- Panels are now top-level sections -->
+      </div>
+
+      <!-- Data Tools Section -->
+      <section data-tab-panel="data-tools" class="hidden">
+        <div class="page-header">
+          <h1 class="page-title">Data Tools</h1>
+        </div>
+
+        <div class="card">
+          <h3 style="margin-bottom: 16px;">Export</h3>
+          <div class="row-actions">
+            <button id="exportCsvBtn" type="button" class="btn-secondary">Export CSV</button>
+            <button id="exportBackupBtn" type="button" class="btn-secondary">Export Backup</button>
           </div>
-        </section>
-      </main>
+        </div>
 
-      <!-- Bottom Tab Bar Navigation -->
-      <nav class="bottom-tab-bar">
-        <button data-tab-button="dashboard" class="tab-item">
-          <span class="tab-icon">📊</span>
-          <span class="tab-label">Dashboard</span>
-        </button>
-        <button data-tab-button="expenses" class="tab-item">
-          <span class="tab-icon">💳</span>
-          <span class="tab-label">Transactions</span>
-        </button>
-        <button data-tab-button="trips" class="tab-item active">
-          <span class="tab-icon">✈️</span>
-          <span class="tab-label">Trips</span>
-        </button>
-        <button data-tab-button="data-tools" class="tab-item">
-          <span class="tab-icon">⚙️</span>
-          <span class="tab-label">Data</span>
-        </button>
-      </nav>
+        <div class="card">
+          <h3 style="margin-bottom: 16px;">Restore JSON Backup</h3>
+          <label>Backup file
+            <input id="restoreFile" type="file" accept="application/json" />
+          </label>
+          <p id="restoreSummary" style="margin: 12px 0; color: var(--text-secondary);"></p>
+          <button id="restoreApplyBtn" type="button" class="btn-danger">Restore (overwrite local data)</button>
+        </div>
 
-      <!-- Floating Action Button -->
-      <button id="fabAddExpense" class="fab" title="Add Expense">+</button>
-    </div>
+        <div class="card">
+          <h3 style="margin-bottom: 16px;">System Info</h3>
+          <div id="schemaVersionLabel" class="summary-label"></div>
+          <div id="statusMessage" class="status" style="margin-top: 8px;"></div>
+        </div>
+      </section>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-    <script type="module" src="./app.js"></script>
-  </body>
+      <!-- Settings Section -->
+      <section data-tab-panel="settings" class="hidden">
+        <div class="page-header">
+          <h1 class="page-title">Settings</h1>
+        </div>
+
+        <div class="card">
+          <h3 style="margin-bottom: 16px;">Config Lists</h3>
+          <form id="settingsForm" class="panel-grid">
+            <label class="row-span-full">Categories (one per line)
+              <textarea id="settingsCategories" rows="10"></textarea>
+            </label>
+            <label class="row-span-full">Payment methods (one per line)
+              <textarea id="settingsPayments" rows="10"></textarea>
+            </label>
+            <div class="row-actions row-span-full">
+              <button type="submit" class="btn-primary">Save Lists</button>
+              <button id="settingsResetBtn" type="button" class="btn-secondary">Reset Defaults</button>
+            </div>
+          </form>
+        </div>
+      </section>
+    </main>
+
+    <!-- Bottom Tab Bar Navigation -->
+    <nav class="bottom-tab-bar">
+      <button data-tab-button="dashboard" class="tab-item">
+        <span class="tab-icon">📊</span>
+        <span class="tab-label">Dashboard</span>
+      </button>
+      <button data-tab-button="expenses" class="tab-item">
+        <span class="tab-icon">💳</span>
+        <span class="tab-label">Transactions</span>
+      </button>
+      <button data-tab-button="trips" class="tab-item active">
+        <span class="tab-icon">✈️</span>
+        <span class="tab-label">Trips</span>
+      </button>
+      <button data-tab-button="data-tools" class="tab-item">
+        <span class="tab-icon">⚙️</span>
+        <span class="tab-label">Data</span>
+      </button>
+    </nav>
+
+    <!-- Floating Action Button -->
+    <button id="fabAddExpense" class="fab" title="Add Expense">+</button>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script type="module" src="./app.js"></script>
+</body>
+
 </html>

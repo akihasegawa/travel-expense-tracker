@@ -1,4 +1,4 @@
-const CACHE_NAME = 'travel-expense-tracker-v1';
+const CACHE_NAME = 'travel-expense-tracker-v2-postcard';
 const APP_SHELL = [
   './',
   './index.html',
